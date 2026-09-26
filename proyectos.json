@@ -3,6 +3,13 @@
   "acciones": [
     {
       "seccion": "Base",
+      "titulo": "Corregir repositorios Debian Testing",
+      "descripcion": "Configura los repositorios oficiales de Debian Testing usando el formato moderno deb822.",
+      "repo": "https://github.com/csr79a/debian-testing-setup.git",
+      "script": "corregir-repos-testing.sh"
+    },
+    {
+      "seccion": "Base",
       "titulo": "Configurar Debian Testing",
       "descripcion": "Setup inicial del sistema.",
       "repo": "https://github.com/csr79a/debian-testing-setup.git",
