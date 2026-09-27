@@ -65,7 +65,7 @@
       "titulo": "Instalar driver NVIDIA",
       "descripcion": "Driver nvidia-open, GRUB para KMS y comprobación de Secure Boot.",
       "repo": "https://github.com/csr79a/nvidia-debian-setup.git",
-      "script": "setup-nvidia-debian-testing.sh"
+      "script": "setup-nvidia-debian.sh"
     },
     {
       "seccion": "Hardware ASUS",
