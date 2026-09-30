@@ -10,6 +10,14 @@ fi
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+for archivo in "$DIR/lanzador.py" "$DIR/proyectos.json"; do
+    if [[ ! -f "$archivo" ]]; then
+        echo "ERROR: falta el archivo requerido: $archivo" >&2
+        echo "Ejecuta este instalador desde una copia completa del repositorio." >&2
+        exit 1
+    fi
+done
+
 faltan=()
 python3 -c 'import PyQt6.QtWidgets' 2>/dev/null || faltan+=("python3-pyqt6")
 command -v git >/dev/null 2>&1 || faltan+=("git")
