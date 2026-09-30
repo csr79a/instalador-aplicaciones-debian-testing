@@ -247,9 +247,20 @@ class PtyRunner(QObject):
             os.setsid()
             fcntl.ioctl(0, termios.TIOCSCTTY, 0)
 
-        self.proc = subprocess.Popen(args, stdin=slave, stdout=slave,
-                                     stderr=slave, preexec_fn=hijo, env=env,
-                                     cwd=cwd)
+        try:
+            self.proc = subprocess.Popen(args, stdin=slave, stdout=slave,
+                                         stderr=slave, preexec_fn=hijo, env=env,
+                                         cwd=cwd)
+        except OSError:
+            try:
+                os.close(slave)
+            except OSError:
+                pass
+            try:
+                os.close(master)
+            except OSError:
+                pass
+            raise
         os.close(slave)
         os.set_blocking(master, False)
         self.master = master
@@ -644,8 +655,11 @@ class Launcher(QWidget):
         self._controles(True)
         self.stack.setCurrentIndex(1)
         self.log.sistema("▶ Preparando el proyecto (git)…")
-        self.runner.start(["bash", "-c", PREPARAR, "_", str(dest),
-                           item["repo"], item["script"]], entorno())
+        try:
+            self.runner.start(["bash", "-c", PREPARAR, "_", str(dest),
+                               item["repo"], item["script"]], entorno())
+        except OSError as err:
+            self._fin(f"No se pudo iniciar el proceso: {err}", "✖ Falló")
 
     def _terminado(self, rc):
         ctx = self.ctx
@@ -679,7 +693,11 @@ class Launcher(QWidget):
                 return
             ctx["fase"] = "ejecutar"
             self.log.sistema("▶ Ejecutando el script…")
-            self.runner.start(["bash", str(script)], entorno(), cwd=str(Path.home()))
+            try:
+                self.runner.start(["bash", str(script)], entorno(),
+                                  cwd=str(Path.home()))
+            except OSError as err:
+                self._fin(f"No se pudo iniciar el script: {err}", "✖ Falló")
             return
         if rc == 0:
             self._fin("El script terminó correctamente.", "✔ Completado", ok=True)
