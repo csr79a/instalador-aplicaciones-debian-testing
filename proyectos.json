@@ -88,6 +88,14 @@
       "descripcion": "Versión para Debian.",
       "repo": "https://github.com/csr79a/terminal-starship-setup.git",
       "script": "setup-terminal-starship-debian.sh"
+    },
+    {
+      "seccion": "Firma electrónica",
+      "titulo": "Instalar AutoFirma",
+      "descripcion": "Instalador gráfico de AutoFirma para Debian.",
+      "repo": "https://github.com/csr79a/autofirma-debian.git",
+      "script": "instalar_autofirma_qt.sh",
+      "modo": "gui"
     }
   ]
 }
