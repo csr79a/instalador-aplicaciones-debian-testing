@@ -236,10 +236,11 @@ los pocos segundos.
 ### 7.6. La acción en modo `gui` no abre la aplicación
 
 Si falla en los primeros segundos, la ventana muestra la salida del script.
-Si no, revisa el registro completo:
+Si no, revisa el registro completo. El nombre del archivo corresponde al nombre
+del script de la acción, por ejemplo:
 
 ```bash
-# Usuario normal. Cambia el nombre por el del script de la acción
+# Usuario normal
 cat ~/.local/share/instalador-aplicaciones-debian-testing/logs/instalar_autofirma_qt.log
 ```
 
