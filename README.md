@@ -43,14 +43,20 @@ python3 ~/instalador-aplicaciones-debian-testing/lanzador.py
 
 ## Proyectos incluidos
 
-| Sección | Repo | Acciones |
+| Sección | Repo | Acción |
 | --- | --- | --- |
-| Base | `debian-testing-setup` | Corregir repositorios / Configurar / Limpiar Debian Testing |
-| Gaming | `gaming-debian-testing` | Instalar / Limpiar gaming |
-| Rendimiento | `sched-ext-debian` | Instalar sched-ext / Instalar gestor de sched-ext (GUI) / Desinstalar sched-ext |
+| Base | `debian-testing-setup` | Corregir repositorios Debian Testing |
+| Base | `debian-testing-setup` | Configurar Debian Testing |
+| Base | `debian-testing-setup` | Limpiar Debian Testing |
+| Gaming | `gaming-debian-testing` | Instalar gaming |
+| Gaming | `gaming-debian-testing` | Limpiar gaming |
+| Rendimiento | `sched-ext-debian` | Instalar sched-ext |
+| Rendimiento | `sched-ext-debian` | Instalar gestor de sched-ext (GUI) |
+| Rendimiento | `sched-ext-debian` | Desinstalar sched-ext |
 | Gráficos NVIDIA | `nvidia-debian-setup` | Instalar driver NVIDIA |
-| Hardware ASUS | `asusctl-rogcontrol-debian` | Instalar / Desinstalar asusctl y ROG Control |
-| Terminal | `terminal-starship-setup` | Configurar terminal con Starship (versión Debian) |
+| Hardware ASUS | `asusctl-rogcontrol-debian` | Instalar asusctl / ROG Control |
+| Hardware ASUS | `asusctl-rogcontrol-debian` | Desinstalar asusctl / ROG Control |
+| Terminal | `terminal-starship-setup` | Configurar terminal con Starship |
 | Firma electrónica | `autofirma-debian` | Instalar AutoFirma |
 
 Las acciones que eliminan cosas (limpiar y desinstalar) piden una confirmación
