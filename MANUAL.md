@@ -33,8 +33,12 @@ Cada acción puede llevar el campo `modo` en `proyectos.json`:
 | `gui` | Para scripts que abren su propia aplicación: actualiza el proyecto en la ventana y lanza el script sin terminal. |
 | `terminal` | Siempre en Konsole, como en las primeras versiones. |
 
-En modo `gui`, si el script falla durante los primeros 3 segundos, la ventana
-muestra su salida. La salida completa se guarda en
+En modo `gui`, el lanzador comprueba el proceso a los 3 segundos. Si ya
+terminó con código 0, lo da por iniciado; si sigue ejecutándose, la interfaz
+también permite cerrar esta vista y asume que la aplicación ya está arrancando,
+pero **eso no garantiza que la aplicación gráfica haya terminado de abrirse**.
+Si el script termina con error, la ventana muestra su salida. La salida
+completa se guarda en
 `~/.local/share/instalador-aplicaciones-debian-testing/logs/<script>.log`.
 
 ### 1.2. Cuadros `whiptail` dentro de la ventana
