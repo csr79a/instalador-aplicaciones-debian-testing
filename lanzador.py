@@ -707,9 +707,14 @@ class Launcher(QWidget):
         if ctx is None or ctx.get("fase") != "gui":
             return
         rc = ctx["proc_gui"].poll()
-        if rc in (None, 0):
-            self._fin("Aplicación iniciada. Puedes cerrar esta vista.",
-                      "✔ Iniciada", ok=True)
+        if rc is None:
+            self._fin("El script de la aplicación sigue ejecutándose; se asume "
+                      "que la aplicación está arrancando. Puedes cerrar esta vista.",
+                      "✔ Lanzada", ok=True)
+            return
+        if rc == 0:
+            self._fin("El script de la aplicación terminó correctamente.",
+                      "✔ Completada", ok=True)
             return
         try:
             cola = ctx["log_gui"].read_text(encoding="utf-8", errors="replace")[-3000:]
