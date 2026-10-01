@@ -54,6 +54,7 @@ El lanzador **no impone este orden ni valida automáticamente las dependencias e
 | Base | `debian-testing-setup` | Corregir repositorios Debian Testing |
 | Base | `debian-testing-setup` | Configurar Debian Testing |
 | Base | `debian-testing-setup` | Limpiar Debian Testing |
+| Base | `debian-testing-setup` | Sincronizar repositorios APT |
 | Gaming | `gaming-debian-testing` | Instalar gaming |
 | Gaming | `gaming-debian-testing` | Limpiar gaming |
 | Rendimiento | `sched-ext-debian` | Instalar sched-ext |

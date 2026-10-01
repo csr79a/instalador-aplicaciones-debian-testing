@@ -24,11 +24,19 @@
       "peligroso": true
     },
     {
+      "seccion": "Base",
+      "titulo": "Sincronizar repositorios APT",
+      "descripcion": "Actualiza la información de los paquetes disponibles en los repositorios configurados (apt update).",
+      "repo": "https://github.com/csr79a/debian-testing-setup.git",
+      "script": "apt-update.sh"
+    },
+    {
       "seccion": "Gaming",
       "titulo": "Instalar gaming",
       "descripcion": "Steam, ProtonPlus, Heroic, GameMode, MangoHud y ntsync.",
       "repo": "https://github.com/csr79a/gaming-debian-testing.git",
-      "script": "setup-gaming-debian-testing.sh"
+      "script": "setup-gaming-debian-testing.sh",
+      "apt_update": true
     },
     {
       "seccion": "Gaming",
@@ -43,7 +51,8 @@
       "titulo": "Instalar sched-ext",
       "descripcion": "Compila e instala los schedulers scx y sus herramientas.",
       "repo": "https://github.com/csr79a/sched-ext-debian.git",
-      "script": "setup-sched-ext-debian.sh"
+      "script": "setup-sched-ext-debian.sh",
+      "apt_update": true
     },
     {
       "seccion": "Rendimiento",
@@ -65,14 +74,16 @@
       "titulo": "Instalar driver NVIDIA",
       "descripcion": "Driver nvidia-open, GRUB para KMS y comprobación de Secure Boot.",
       "repo": "https://github.com/csr79a/nvidia-debian-setup.git",
-      "script": "setup-nvidia-debian.sh"
+      "script": "setup-nvidia-debian.sh",
+      "apt_update": true
     },
     {
       "seccion": "Hardware ASUS",
       "titulo": "Instalar asusctl / ROG Control",
       "descripcion": "Compila e instala asusctl y ROG Control.",
       "repo": "https://github.com/csr79a/asusctl-rogcontrol-debian.git",
-      "script": "setup-asusctl-rogcontrol.sh"
+      "script": "setup-asusctl-rogcontrol.sh",
+      "apt_update": true
     },
     {
       "seccion": "Hardware ASUS",

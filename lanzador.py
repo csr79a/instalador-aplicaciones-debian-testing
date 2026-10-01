@@ -679,41 +679,65 @@ class Launcher(QWidget):
             if rc != 0:
                 self._fin("No se pudo preparar el proyecto.", f"Falló (código {rc})")
                 return
-            script = ctx["dest"] / ctx["item"]["script"]
-            try:
-                contenido = script.read_text(encoding="utf-8", errors="replace")
-            except OSError:
-                contenido = ""
-            # Se ignoran las líneas de comentario para no confundir una mera
-            # mención (p. ej. "--menu" en un comentario) con un uso real.
-            codigo = "\n".join(
-                l for l in contenido.splitlines() if not l.lstrip().startswith("#"))
-            usa_dialogos = bool(DIALOG_RE.search(codigo)) or (
-                "whiptail" in codigo and bool(TIPOS_NO_SOPORTADOS_RE.search(codigo)))
-            if ctx["modo"] == "auto" and usa_dialogos:
-                self.log.sistema("Este script usa menús, listas o campos de "
-                                 "texto (whiptail/dialog) que no se pueden "
-                                 "mostrar aquí: se abre en Konsole.")
-                if self.abrir_terminal(ctx["item"]):
-                    self._fin("Abierto en Konsole.", "Abierto en Konsole", ok=True)
-                else:
-                    self._fin("No hay ninguna terminal disponible.", "Falló")
+            # Sincronización opcional de los índices de APT antes del script
+            # (campo "apt_update": true en proyectos.json). Se ejecuta en el
+            # mismo PTY, así la contraseña de sudo se pide en la ventana y su
+            # caché queda caliente para el script.
+            if ctx["item"].get("apt_update"):
+                ctx["fase"] = "apt"
+                self.log.sistema("▶ Sincronizando índices de APT (sudo apt update)…")
+                try:
+                    self.runner.start(["sudo", "apt", "update"], entorno(),
+                                      cwd=str(Path.home()))
+                except OSError as err:
+                    self._fin(f"No se pudo iniciar 'apt update': {err}", "✖ Falló")
                 return
-            if ctx["modo"] == "gui":
-                self._lanzar_gui(script)
-                return
-            ctx["fase"] = "ejecutar"
-            self.log.sistema("▶ Ejecutando el script…")
-            try:
-                self.runner.start(["bash", str(script)], entorno(),
-                                  cwd=str(Path.home()))
-            except OSError as err:
-                self._fin(f"No se pudo iniciar el script: {err}", "✖ Falló")
+            self._arrancar_script(ctx)
+            return
+        if ctx["fase"] == "apt":
+            # Un fallo de apt update (p. ej. sin red) no aborta: se avisa y se
+            # sigue con el script, que puede funcionar igualmente.
+            if rc != 0:
+                self.log.sistema("'apt update' falló; se continúa con el script.",
+                                 color="#f2cc60")
+            self._arrancar_script(ctx)
             return
         if rc == 0:
             self._fin("El script terminó correctamente.", "✔ Completado", ok=True)
         else:
             self._fin(f"El script terminó con código {rc}.", f"✖ Falló (código {rc})")
+
+    def _arrancar_script(self, ctx):
+        script = ctx["dest"] / ctx["item"]["script"]
+        try:
+            contenido = script.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            contenido = ""
+        # Se ignoran las líneas de comentario para no confundir una mera
+        # mención (p. ej. "--menu" en un comentario) con un uso real.
+        codigo = "\n".join(
+            l for l in contenido.splitlines() if not l.lstrip().startswith("#"))
+        usa_dialogos = bool(DIALOG_RE.search(codigo)) or (
+            "whiptail" in codigo and bool(TIPOS_NO_SOPORTADOS_RE.search(codigo)))
+        if ctx["modo"] == "auto" and usa_dialogos:
+            self.log.sistema("Este script usa menús, listas o campos de "
+                             "texto (whiptail/dialog) que no se pueden "
+                             "mostrar aquí: se abre en Konsole.")
+            if self.abrir_terminal(ctx["item"]):
+                self._fin("Abierto en Konsole.", "Abierto en Konsole", ok=True)
+            else:
+                self._fin("No hay ninguna terminal disponible.", "Falló")
+            return
+        if ctx["modo"] == "gui":
+            self._lanzar_gui(script)
+            return
+        ctx["fase"] = "ejecutar"
+        self.log.sistema("▶ Ejecutando el script…")
+        try:
+            self.runner.start(["bash", str(script)], entorno(),
+                              cwd=str(Path.home()))
+        except OSError as err:
+            self._fin(f"No se pudo iniciar el script: {err}", "✖ Falló")
 
     def _lanzar_gui(self, script):
         LOG_DIR.mkdir(parents=True, exist_ok=True)

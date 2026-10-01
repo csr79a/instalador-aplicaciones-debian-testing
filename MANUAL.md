@@ -8,8 +8,9 @@ El lanzador es una ventana que muestra una lista de acciones agrupadas por secci
 
 1. La ventana pasa a la vista de ejecución: un panel de registro, un campo de respuesta y el botón **Cancelar**.
 2. Si el proyecto no está descargado, lo clona con `git clone`. Si ya está, ejecuta `git pull --ff-only`.
-3. Ejecuta el script según el `modo` definido en `proyectos.json`. En los modos integrados usa un pseudo-terminal, de forma que `sudo`, `read` y los colores funcionan como en una terminal. Las preguntas y la contraseña de `sudo` se escriben en el campo de la parte inferior y se envían con Enter.
-4. Al terminar muestra el resultado (completado, falló con su código o cancelado) y se activa **Volver**.
+3. Si la acción lleva `apt_update: true`, ejecuta `sudo apt update` (sincroniza los índices de APT; **no** actualiza paquetes ni toca las fuentes). Si falla, avisa y continúa con el script.
+4. Ejecuta el script según el `modo` definido en `proyectos.json`. En los modos integrados usa un pseudo-terminal, de forma que `sudo`, `read` y los colores funcionan como en una terminal. Las preguntas y la contraseña de `sudo` se escriben en el campo de la parte inferior y se envían con Enter.
+5. Al terminar muestra el resultado (completado, falló con su código o cancelado) y se activa **Volver**.
 
 El lanzador no modifica los scripts descargados y no ejecuta nada como root por su cuenta. Se niega a arrancar si lo lanzas como root. **Los scripts llamados por el lanzador tienen sus propias políticas de privilegios:** la mayoría se ejecutan como usuario normal y solicitan `sudo` cuando lo necesitan, mientras que `corregir-repos-testing.sh` puede elevarse automáticamente mediante `sudo` para modificar la configuración de APT.
 
@@ -144,6 +145,7 @@ git -C ~/instalador-aplicaciones-debian-testing pull --ff-only
 | `script` | Sí | Ruta del script **dentro del repo**, relativa a su raíz. |
 | `peligroso` | No | Si es `true`, el botón pide confirmación. |
 | `modo` | No | `auto` (por defecto), `integrado`, `gui` o `terminal`. Ver 1.1. |
+| `apt_update` | No | Si es `true`, el lanzador ejecuta `sudo apt update` antes del script (sincroniza los índices de APT; no actualiza paquetes). Ver 1. |
 
 ### Añadir un script nuevo
 
