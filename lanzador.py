@@ -118,7 +118,9 @@ SHIM_DIR = Path.home() / ".local/share/instalador-aplicaciones-debian-testing/sh
 # whiptail en modo texto. El lanzador lo pone al principio del PATH solo para
 # los scripts que ejecuta dentro de su ventana. Lee y escribe en /dev/tty (el
 # pseudo-terminal de la ventana), así que funciona aunque el script redirija
-# stdout/stderr. Códigos de salida como whiptail: 0 = sí/aceptar, 1 = no.
+# stdout/stderr. Códigos de salida como whiptail: 0 = sí/aceptar, 1 = no;
+# 2 = error del propio shim (uso no soportado / sin /dev/tty), para no
+# confundirlo con el 255 (ESC) de whiptail.
 SHIM_WHIPTAIL = r'''#!/usr/bin/env bash
 # whiptail en modo texto (generado por el lanzador; no editar).
 title=""; kind=""; texto=""; yes_lbl="Sí"; no_lbl="No"; defaultno=0
@@ -131,12 +133,12 @@ while [ $# -gt 0 ]; do
         --defaultno)  defaultno=1; shift ;;
         --yesno|--msgbox|--infobox) kind=${1#--}; texto=$2; shift 2 ;;
         --clear|--nocancel|--scrolltext|--fb|--fullbuttons|--notags|--separate-output) shift ;;
-        --*) echo "whiptail (modo texto): opción no soportada: $1" >&2; exit 255 ;;
+        --*) echo "whiptail (modo texto): opción no soportada: $1" >&2; exit 2 ;;
         *) shift ;;
     esac
 done
-[ -n "$kind" ] || { echo "whiptail (modo texto): solo admite --yesno, --msgbox e --infobox" >&2; exit 255; }
-[ -r /dev/tty ] && [ -w /dev/tty ] || exit 255
+[ -n "$kind" ] || { echo "whiptail (modo texto): solo admite --yesno, --msgbox e --infobox" >&2; exit 2; }
+[ -r /dev/tty ] && [ -w /dev/tty ] || exit 2
 {
     printf '\n\033[1;36m━━ %s ━━\033[0m\n' "${title:-Aviso}"
     printf '%b\n' "$texto"
@@ -145,13 +147,13 @@ case "$kind" in
     infobox) exit 0 ;;
     msgbox)
         printf 'Pulsa Enter para continuar… ' > /dev/tty
-        read -r _ < /dev/tty || exit 255
+        read -r _ < /dev/tty || exit 2
         exit 0 ;;
 esac
 if [ "$defaultno" = 1 ]; then hint="s/N"; def=1; else hint="S/n"; def=0; fi
 while true; do
     printf 's = %s, n = %s  [%s]: ' "$yes_lbl" "$no_lbl" "$hint" > /dev/tty
-    read -r resp < /dev/tty || exit 255
+    read -r resp < /dev/tty || exit 2
     case "${resp,,}" in
         s|si|sí|y|yes) exit 0 ;;
         n|no)          exit 1 ;;
@@ -191,10 +193,15 @@ def repo_name(url):
 
 
 def entorno():
-    """Entorno para los scripts: TERM=dumb evita barras de progreso con
-    cursor y paginadores que se quedarían esperando una tecla."""
+    """Entorno para los scripts: paginadores no interactivos. NO se fuerza
+    TERM=dumb a propósito: hay scripts que interpretan TERM=dumb como "sin
+    terminal interactiva" y se saltarían sus propias preguntas (p. ej. el
+    setup de gaming). Se respeta el TERM del entorno o, si no hay (o venía en
+    "dumb"), se usa uno normal."""
     env = os.environ.copy()
-    env.update({"TERM": "dumb", "PAGER": "cat", "GIT_PAGER": "cat",
+    if not env.get("TERM") or env["TERM"] == "dumb":
+        env["TERM"] = "xterm"
+    env.update({"PAGER": "cat", "GIT_PAGER": "cat",
                 "SYSTEMD_PAGER": "", "LANZADOR_INTEGRADO": "1"})
     try:
         SHIM_DIR.mkdir(parents=True, exist_ok=True)
@@ -677,8 +684,12 @@ class Launcher(QWidget):
                 contenido = script.read_text(encoding="utf-8", errors="replace")
             except OSError:
                 contenido = ""
-            usa_dialogos = bool(DIALOG_RE.search(contenido)) or (
-                "whiptail" in contenido and bool(TIPOS_NO_SOPORTADOS_RE.search(contenido)))
+            # Se ignoran las líneas de comentario para no confundir una mera
+            # mención (p. ej. "--menu" en un comentario) con un uso real.
+            codigo = "\n".join(
+                l for l in contenido.splitlines() if not l.lstrip().startswith("#"))
+            usa_dialogos = bool(DIALOG_RE.search(codigo)) or (
+                "whiptail" in codigo and bool(TIPOS_NO_SOPORTADOS_RE.search(codigo)))
             if ctx["modo"] == "auto" and usa_dialogos:
                 self.log.sistema("Este script usa menús, listas o campos de "
                                  "texto (whiptail/dialog) que no se pueden "
@@ -775,7 +786,10 @@ class Launcher(QWidget):
 
     def _salida(self, datos):
         self.log.feed(datos)
-        pide_clave = bool(PASS_RE.search(self.log.ultima_linea()))
+        linea = self.log.ultima_linea()
+        # "?" descarta preguntas que solo mencionan la palabra (p. ej.
+        # "¿Guardar contraseña:"), que no son una petición real de clave.
+        pide_clave = "?" not in linea and bool(PASS_RE.search(linea))
         modo = QLineEdit.EchoMode.Password if pide_clave else QLineEdit.EchoMode.Normal
         if self.entrada.echoMode() != modo:
             self.entrada.setEchoMode(modo)
@@ -829,7 +843,7 @@ def main():
     try:
         config = json.loads(CONFIG.read_text(encoding="utf-8"))
         window = Launcher(config)
-    except (OSError, ValueError, KeyError) as err:
+    except (OSError, ValueError, KeyError, TypeError) as err:
         QMessageBox.critical(None, "Error de configuración",
                              f"No se pudo leer {CONFIG}:\n{err}")
         return 1

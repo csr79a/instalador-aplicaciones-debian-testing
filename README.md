@@ -6,7 +6,9 @@ Panel gráfico para **Debian Testing** que reúne mis scripts de configuración 
 
 - Ventana hecha con **PyQt6**, con los colores de tu tema de Plasma (claro u oscuro).
 - El progreso, las preguntas, los avisos y la contraseña de `sudo` aparecen en la misma ventana cuando la acción se ejecuta en modo integrado.
-- Los cuadros `whiptail` de tipo sí/no y aviso se convierten en preguntas de texto; los scripts con menús o listas se abren en **Konsole** cuando el modo automático lo determina.- El lanzador se inicia como **usuario normal** y no necesita `sudo` por sí mismo. Los scripts llamados desde él pueden solicitar `sudo` cuando lo necesitan.
+- No se fuerza `TERM=dumb` en los scripts: ven un terminal interactivo normal, de modo que sus propias preguntas también funcionan.
+- Los cuadros `whiptail` de tipo sí/no y aviso se convierten en preguntas de texto; los scripts con menús o listas se abren en **Konsole** cuando el modo automático lo determina.
+- El lanzador se inicia como **usuario normal** y no necesita `sudo` por sí mismo. Los scripts llamados desde él pueden solicitar `sudo` cuando lo necesitan.
 - En una instalación limpia solo hace falta este repo: el resto de proyectos se descargan al pulsar cada botón.
 
 ## Requisitos

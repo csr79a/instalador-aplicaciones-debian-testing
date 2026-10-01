@@ -40,7 +40,7 @@ Si el script usa `--menu`, `--checklist`, `--radiolist`, `--inputbox`, `--passwo
 
 ### 1.3. Limitaciones
 
-- El entorno de los scripts usa `TERM=dumb`: las barras de progreso de `apt` salen como texto simple, sin animación. Los colores que el script escribe por sí mismo sí se ven.
+- El entorno de los scripts usa paginadores no interactivos (`PAGER=cat`, `GIT_PAGER=cat`, etc.). No se fuerza `TERM=dumb`: algunos scripts lo interpretan como "sin terminal interactiva" y se saltarían sus preguntas. Se respeta el `TERM` del entorno (o se usa `xterm` si no hay). Los colores que el script escribe por sí mismo se ven igual.
 - Programas de pantalla completa (`nano`, `less`, `htop`, `vim`) no funcionan dentro de la ventana. Si un script los usa, pon `"modo": "terminal"`.
 - Si un script carga `whiptail` desde otro archivo con `source`, el lanzador no lo detecta. Pon `"modo": "terminal"` en esa acción si usa menús.
 
@@ -162,7 +162,8 @@ Si cambias el nombre o la ruta de un script dentro de un repo, actualiza el camp
 - **`corregir-repos-testing.sh` es una excepción importante:** si se ejecuta desde el lanzador, puede elevarse mediante `sudo` para poder modificar la configuración de APT. Esto es intencionado.
 - `sched-ext-debian` necesita un kernel **ya arrancado** con `CONFIG_SCHED_CLASS_EXT=y`, según el README de ese repo. Si no lo tienes, hay que compilar uno antes (`kernel-debian-builder`) y reiniciar con él.
 - **Instalar gestor de sched-ext (GUI)** necesita que **Instalar sched-ext** se haya ejecutado antes (requiere `scxctl` en el `PATH` y `scx_loader.service` activo). El lanzador no valida ese orden por ti.
-- `nvidia-debian-setup` puede necesitar un paso manual después de reiniciar si tienes Secure Boot activado (enrolar la clave MOK). Revisa el registro de la ventana al terminar el script: te lo avisa ahí si aplica.- Las acciones de limpiar y desinstalar pueden eliminar paquetes y archivos. Además de la confirmación del lanzador, algunos scripts piden su propia confirmación.
+- `nvidia-debian-setup` puede necesitar un paso manual después de reiniciar si tienes Secure Boot activado (enrolar la clave MOK). Revisa el registro de la ventana al terminar el script: te lo avisa ahí si aplica.
+- Las acciones de limpiar y desinstalar pueden eliminar paquetes y archivos. Además de la confirmación del lanzador, algunos scripts piden su propia confirmación.
 
 ## 8. Solución de problemas
 
