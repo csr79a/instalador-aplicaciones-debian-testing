@@ -162,9 +162,7 @@ Si cambias el nombre o la ruta de un script dentro de un repo, actualiza el camp
 - **`corregir-repos-testing.sh` es una excepción importante:** si se ejecuta desde el lanzador, puede elevarse mediante `sudo` para poder modificar la configuración de APT. Esto es intencionado.
 - `sched-ext-debian` necesita un kernel **ya arrancado** con `CONFIG_SCHED_CLASS_EXT=y`, según el README de ese repo. Si no lo tienes, hay que compilar uno antes (`kernel-debian-builder`) y reiniciar con él.
 - **Instalar gestor de sched-ext (GUI)** necesita que **Instalar sched-ext** se haya ejecutado antes (requiere `scxctl` en el `PATH` y `scx_loader.service` activo). El lanzador no valida ese orden por ti.
-- `nvidia-debian-setup` puede necesitar un paso manual después de reiniciar si tienes Secure Boot activado (enrolar la clave MOK). Revisa el registro de la ventana al terminar el script: te lo avisa ahí si aplica.
-- **Instalar AutoFirma** usa el modo `gui`: actualiza el proyecto y abre el instalador gráfico sin terminal.
-- Las acciones de limpiar y desinstalar pueden eliminar paquetes y archivos. Además de la confirmación del lanzador, algunos scripts piden su propia confirmación.
+- `nvidia-debian-setup` puede necesitar un paso manual después de reiniciar si tienes Secure Boot activado (enrolar la clave MOK). Revisa el registro de la ventana al terminar el script: te lo avisa ahí si aplica.- Las acciones de limpiar y desinstalar pueden eliminar paquetes y archivos. Además de la confirmación del lanzador, algunos scripts piden su propia confirmación.
 
 ## 8. Solución de problemas
 
@@ -203,12 +201,7 @@ Casi siempre está esperando una respuesta. Mira la última línea del registro:
 
 ### 8.6. La acción en modo `gui` no abre la aplicación
 
-Si falla en los primeros segundos, la ventana muestra la salida del script. Si no, revisa el registro completo. El nombre del archivo corresponde al nombre del script de la acción, por ejemplo:
-
-```bash
-# Usuario normal
-cat ~/.local/share/instalador-aplicaciones-debian-testing/logs/instalar_autofirma_qt.log
-```
+Si falla en los primeros segundos, la ventana muestra la salida del script. Si no, revisa el registro completo. El nombre del archivo corresponde al nombre del script de la acción.
 
 ### 8.7. Una copia descargada está rota
 
