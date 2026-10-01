@@ -6,9 +6,7 @@ Panel gráfico para **Debian Testing** que reúne mis scripts de configuración 
 
 - Ventana hecha con **PyQt6**, con los colores de tu tema de Plasma (claro u oscuro).
 - El progreso, las preguntas, los avisos y la contraseña de `sudo` aparecen en la misma ventana cuando la acción se ejecuta en modo integrado.
-- Los cuadros `whiptail` de tipo sí/no y aviso se convierten en preguntas de texto; los scripts con menús o listas se abren en **Konsole** cuando el modo automático lo determina.
-- Las aplicaciones con ventana propia (como AutoFirma) se abren sin terminal.
-- El lanzador se inicia como **usuario normal** y no necesita `sudo` por sí mismo. Los scripts llamados desde él pueden solicitar `sudo` cuando lo necesitan.
+- Los cuadros `whiptail` de tipo sí/no y aviso se convierten en preguntas de texto; los scripts con menús o listas se abren en **Konsole** cuando el modo automático lo determina.- El lanzador se inicia como **usuario normal** y no necesita `sudo` por sí mismo. Los scripts llamados desde él pueden solicitar `sudo` cuando lo necesitan.
 - En una instalación limpia solo hace falta este repo: el resto de proyectos se descargan al pulsar cada botón.
 
 ## Requisitos
@@ -42,7 +40,7 @@ Para una instalación nueva de Debian Testing, se recomienda seguir este orden:
 1. **Instalar el lanzador** con `instalar-lanzador.sh`.
 2. **Corregir los repositorios Debian Testing** con la acción correspondiente, si el sistema necesita normalizarlos.
 3. **Configurar Debian Testing** con la acción correspondiente.
-4. Ejecutar después las acciones adicionales que necesites, como gaming, NVIDIA, ASUS, sched-ext, Starship o AutoFirma.
+4. Ejecutar después las acciones adicionales que necesites, como gaming, NVIDIA, ASUS, sched-ext o Starship.
 5. Usar las acciones de **limpieza o desinstalación** solo cuando quieras revertir componentes concretos.
 
 El lanzador **no impone este orden ni valida automáticamente las dependencias entre acciones**. La documentación de cada proyecto y las descripciones de las acciones indican los requisitos específicos que puedan existir.
@@ -63,7 +61,6 @@ El lanzador **no impone este orden ni valida automáticamente las dependencias e
 | Hardware ASUS | `asusctl-rogcontrol-debian` | Instalar asusctl / ROG Control |
 | Hardware ASUS | `asusctl-rogcontrol-debian` | Desinstalar asusctl / ROG Control |
 | Terminal | `terminal-starship-setup` | Configurar terminal con Starship |
-| Firma electrónica | `autofirma-debian` | Instalar AutoFirma |
 
 Las acciones que eliminan cosas (limpiar y desinstalar) piden una confirmación extra antes de ejecutar el script.
 
