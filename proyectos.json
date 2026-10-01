@@ -6,7 +6,7 @@
       "titulo": "Corregir repositorios Debian Testing",
       "descripcion": "Configura los repositorios oficiales de Debian Testing usando el formato moderno deb822.",
       "repo": "https://github.com/csr79a/debian-testing-setup.git",
-      "script": "corregir-repos-testing.sh"
+      "script": "repos/corregir-repos-testing.sh"
     },
     {
       "seccion": "Base",
@@ -28,7 +28,7 @@
       "titulo": "Sincronizar repositorios APT",
       "descripcion": "Actualiza la información de los paquetes disponibles en los repositorios configurados (apt update).",
       "repo": "https://github.com/csr79a/debian-testing-setup.git",
-      "script": "apt-update.sh"
+      "script": "repos/apt-update.sh"
     },
     {
       "seccion": "Gaming",
